@@ -1,7 +1,7 @@
 from functools import reduce
 
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 
 from utils.file_handling import read_file_to_string_list
@@ -32,6 +32,11 @@ def get_elves(data: List) -> List[Elf]:
             elves.append(Elf(items.copy()))
             items.clear()
 
+    # this add the last elf in the list if there isn't a blank line at the end
+    if items:
+        elves.append(Elf(items.copy()))
+        items.clear()
+
     return elves
 
 
@@ -47,13 +52,31 @@ def get_elf_with_most_cals(elves: List[Elf]):
     return max_cal_elf
 
 
+def sort_elves_by_cals(elf: Elf):
+    return elf.total_cals
+
+
+def get_total_for_top_three_elves(elves: List[Elf]):
+    return elves[0].total_cals + elves[1].total_cals + elves[2].total_cals
+
+
+######################
+
+
 def main(data: List):
     elves = get_elves(data)
 
+    # Part 1
     max_cal_elf = get_elf_with_most_cals(elves)
-
     # Answer part 1
     print(f'Elf carrying the most Calories: {max_cal_elf}, Total: {max_cal_elf.total_cals}')
+
+    # Part 2
+    elves.sort(reverse=True, key=sort_elves_by_cals)
+    total_for_top_three = get_total_for_top_three_elves(elves)
+
+    # Answer part 2
+    print(f'Total for top three elves: {total_for_top_three}')
 
 
 if __name__ == '__main__':
